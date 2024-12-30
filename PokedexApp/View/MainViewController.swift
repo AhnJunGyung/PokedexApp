@@ -13,7 +13,6 @@ class MainViewController: UIViewController {
     private let viewModel = MainViewModel()//뷰 모델 : 비즈니스 로직
     private let disposeBag = DisposeBag()
     private var pokemon = [Pokemon]()
-    private var pokemonInfo = [PokemonInfo]()
     
     private let imageView: UIImageView = {
         let imageView = UIImageView()
@@ -93,7 +92,6 @@ class MainViewController: UIViewController {
 extension MainViewController: UICollectionViewDelegate {
     //컬렉션 뷰 선택시 이벤트
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(indexPath.row + 1)
         navigationController?.pushViewController(DetailViewController(id: indexPath.row + 1), animated: true)
     }
 }
