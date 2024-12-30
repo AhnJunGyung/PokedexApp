@@ -57,7 +57,7 @@ class MainViewController: UIViewController {
         item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 7, bottom: 0, trailing: 3)//아이템 간격
         
         //그룹 크기 설정
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(0.19))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(0.2))
         
         //groupSize를 그룹에 적용하고 아이템이 수평으로 나열되도록 설정
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
@@ -76,7 +76,7 @@ class MainViewController: UIViewController {
         
         imageView.snp.makeConstraints {
             $0.height.width.equalTo(100)
-            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top).inset(30)
+            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             $0.centerX.equalToSuperview()
         }
         
@@ -91,7 +91,11 @@ class MainViewController: UIViewController {
 }
 
 extension MainViewController: UICollectionViewDelegate {
-    
+    //컬렉션 뷰 선택시 이벤트
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print(indexPath.row + 1)
+        navigationController?.pushViewController(DetailViewController(id: indexPath.row + 1), animated: true)
+    }
 }
 
 extension MainViewController: UICollectionViewDataSource {
