@@ -7,16 +7,22 @@
 
 import UIKit
 import SnapKit
+import RxSwift
 
 class DetailViewController: UIViewController {
+
     private let id: Int
+
+    private lazy var viewModel = DetailViewModel(with: id)
+    private let disposeBag = DisposeBag()
+    private var pokemonInfo: PokemonInfo?
     
     init(id: Int) {
         self.id = id
         super.init(nibName: nil, bundle: nil)
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -24,11 +30,16 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor.mainRed
         
+        bind()
         configureUI()
     }
     
-    private func configureUI() {
+    private func bind() {
         
+    }
+    
+    private func configureUI() {
+
     }
     
 }

@@ -14,7 +14,6 @@ class MainViewModel {
     
     //Subject(Observable + Observer) 선언 & 초기값 생성
     let pokemonSubject = BehaviorSubject(value: [Pokemon]())
-    let pokemonInfoSubject = BehaviorSubject(value: [PokemonInfo]())
     
     init() {
         fetchPokemon()

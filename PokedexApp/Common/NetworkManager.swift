@@ -7,6 +7,7 @@
 
 import Foundation
 import RxSwift
+import UIKit
 
 enum NetworkError: Error {
     case invalidUrl
@@ -45,4 +46,6 @@ class NetworkManager {
             return Disposables.create()
         }
     }
+    
+    
 }
