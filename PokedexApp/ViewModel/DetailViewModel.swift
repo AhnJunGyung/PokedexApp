@@ -24,7 +24,7 @@ class DetailViewModel {
     
     //포켓몬 상세정보 가져오기
     func fetchPokemonInfo(_ id: Int) {
-        
+
         //URL 세팅
         guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon/\(id)/") else {
             pokemonInfoSubject.onError(NetworkError.invalidUrl)
@@ -39,4 +39,5 @@ class DetailViewModel {
             self?.pokemonInfoSubject.onError(error)
         }).disposed(by: disposeBag)
     }
+    
 }

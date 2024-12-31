@@ -34,7 +34,7 @@ class NetworkManager {
                     observer(.failure(NetworkError.dataFetchFail))
                     return
                 }
-                
+
                 do {//try : 에러를 catch로 보냄
                     let decodedData = try JSONDecoder().decode(T.self, from: data)
                     observer(.success(decodedData))
@@ -46,6 +46,4 @@ class NetworkManager {
             return Disposables.create()
         }
     }
-    
-    
 }
