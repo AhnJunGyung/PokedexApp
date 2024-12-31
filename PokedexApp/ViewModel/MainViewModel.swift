@@ -23,7 +23,7 @@ class MainViewModel {
     let limit = 20
     let offset = 0
     
-    //포켓몬 데이터 fetch
+    //포켓몬 이미지 fetch
     func fetchPokemon() {
         //URL 생성
         guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon?limit=\(limit)&offset=\(offset)") else {

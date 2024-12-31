@@ -7,7 +7,6 @@
 
 import Foundation
 
-// MARK: - PokemonInfo
 struct PokemonInfo: Codable {
     let id: Int
     let name: String
@@ -16,13 +15,11 @@ struct PokemonInfo: Codable {
     let weight, height: Int
 }
 
-// MARK: - Species
 struct Species: Codable {
     let name: String
     let url: String
 }
 
-// MARK: - TypeElement
 struct TypeElement: Codable {
     let slot: Int
     let type: Species

@@ -11,10 +11,10 @@ import RxSwift
 
 class DetailViewModel {
     
-    private let id: Int
+    private let id: Int//포켓몬 id
     private let disposeBag = DisposeBag()
     
-    //PublishSubject 선언
+    // PublishSubject 선언
     let pokemonInfoSubject = PublishSubject<PokemonInfo>()
     
     init(with id: Int) {
@@ -22,7 +22,7 @@ class DetailViewModel {
         fetchPokemonInfo(id)
     }
     
-    //포켓몬 상세정보 가져오기
+    //포켓몬 정보 fetch
     func fetchPokemonInfo(_ id: Int) {
 
         //URL 세팅
