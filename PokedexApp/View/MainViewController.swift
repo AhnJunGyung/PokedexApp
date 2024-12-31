@@ -86,7 +86,6 @@ class MainViewController: UIViewController {
         }
     }
 
-
 }
 
 extension MainViewController: UICollectionViewDelegate {
@@ -101,12 +100,10 @@ extension MainViewController: UICollectionViewDataSource {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainCollectionViewCell.id, for: indexPath) as? MainCollectionViewCell else {
             return UICollectionViewCell()
         }
-
         cell.configure(indexPath: indexPath.row)
         
         return cell
     }
-    
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return pokemon.count
