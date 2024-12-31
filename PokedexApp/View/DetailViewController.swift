@@ -11,9 +11,9 @@ import RxSwift
 
 class DetailViewController: UIViewController {
     
-    private let id: Int
+    private let id: Int//포켓몬 id
     
-    private lazy var viewModel = DetailViewModel(with: id)
+    private lazy var viewModel = DetailViewModel(with: id)//뷰모델 객체 생성
     private let disposeBag = DisposeBag()
     private var pokemonInfo: PokemonInfo?
     
@@ -26,6 +26,7 @@ class DetailViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - UI 생성
     private let rect: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.darkRed
@@ -40,28 +41,24 @@ class DetailViewController: UIViewController {
     
     private var idNameLabel: UILabel = {
         let label = UILabel()
-        label.text = "No. 이름"
         label.font = .systemFont(ofSize: 32, weight: .semibold)
         return label
     }()
     
     private var typeLabel: UILabel = {
         let label = UILabel()
-        label.text = "타입: "
         label.font = .systemFont(ofSize: 22, weight: .semibold)
         return label
     }()
     
     private var heightLabel: UILabel = {
         let label = UILabel()
-        label.text = "키: "
         label.font = .systemFont(ofSize: 22, weight: .semibold)
         return label
     }()
     
     private var weightLabel: UILabel = {
         let label = UILabel()
-        label.text = "몸무게: "
         label.font = .systemFont(ofSize: 22, weight: .semibold)
         return label
     }()
@@ -73,14 +70,19 @@ class DetailViewController: UIViewController {
         configureUI()
     }
     
-    private func bind() {//포켓몬 정보 가져오기
+    // MARK: - 포켓몬 정보 가져오기 & 세팅
+    private func bind() {
+        //UI작업 MainScheduler에서 작업
         viewModel.pokemonInfoSubject.observe(on: MainScheduler()).subscribe(onNext: { pokemonInfo in
             
             self.configureImageView(id: self.id)//포켓몬 이미지
-            self.idNameLabel.text = "No." + String(pokemonInfo.id) + " " + pokemonInfo.name//번호, 이름
             
-            if let type = pokemonInfo.types.first?.type.name {//타입
-                self.typeLabel.text = "타입: " + type
+            //번호, 이름(한국어 변환)
+            self.idNameLabel.text = "No." + String(pokemonInfo.id) + " " + PokemonTranslator.getKoreanName(for: pokemonInfo.name)
+            
+            //타입(한국어 변환)
+            if let type = pokemonInfo.types.first?.type.name {
+                self.typeLabel.text = "타입: " + (PokemonTypeName(rawValue: type)?.displayName ?? "")
             }
             
             //키, 몸무게 - 단위 : 몸무게(그램), 키(데시미터. 1/10m = 10cm)
@@ -92,6 +94,7 @@ class DetailViewController: UIViewController {
         }).disposed(by: disposeBag)
     }
     
+    // MARK: - 포켓몬 이미지 작업
     private func configureImageView(id: Int) {
         let urlString = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/\(id).png"
         guard let url = URL(string: urlString) else { return }
@@ -110,6 +113,7 @@ class DetailViewController: UIViewController {
         }
     }
     
+    // MARK: - UI 제약조건
     private func configureUI() {
         view.backgroundColor = UIColor.mainRed
         view.addSubview(rect)
@@ -156,3 +160,50 @@ class DetailViewController: UIViewController {
     }
     
 }
+
+// MARK: - 포켓몬 속성 한국어 버젼
+enum PokemonTypeName: String, CaseIterable, Codable {
+    case normal
+    case fire
+    case water
+    case electric
+    case grass
+    case ice
+    case fighting
+    case poison
+    case ground
+    case flying
+    case psychic
+    case bug
+    case rock
+    case ghost
+    case dragon
+    case dark
+    case steel
+    case fairy
+
+    var displayName: String {
+        switch self {
+        case .normal: return "노말"
+        case .fire: return "불꽃"
+        case .water: return "물"
+        case .electric: return "전기"
+        case .grass: return "풀"
+        case .ice: return "얼음"
+        case .fighting: return "격투"
+        case .poison: return "독"
+        case .ground: return "땅"
+        case .flying: return "비행"
+        case .psychic: return "에스퍼"
+        case .bug: return "벌레"
+        case .rock: return "바위"
+        case .ghost: return "고스트"
+        case .dragon: return "드래곤"
+        case .dark: return "어둠"
+        case .steel: return "강철"
+        case .fairy: return "페어리"
+        }
+    }
+    
+}
+

@@ -14,6 +14,7 @@ class MainViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private var pokemon = [Pokemon]()
     
+    // MARK: - UI 생성
     private let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(resource: ImageResource.pokemonBall)
@@ -35,6 +36,7 @@ class MainViewController: UIViewController {
         configureUI()
     }
     
+    // MARK: - 포켓몬 이미지 가져오기
     private func bind() {
         //viewModel의 pokemonSubject를 구독
         //UI관련 로직이기 때문에 .observe(on: MainScheduler.instance) 로 메인쓰레드에서 작업하도록 함
@@ -46,6 +48,7 @@ class MainViewController: UIViewController {
         }).disposed(by: disposeBag)
     }
     
+    // MARK: - 컬렉션뷰 레이아웃 설정
     private func createLayout() -> UICollectionViewLayout {
         
         //NSCollectionLayoutSize로 itemSize 설정
@@ -68,7 +71,8 @@ class MainViewController: UIViewController {
         
         return UICollectionViewCompositionalLayout(section: section)
     }
-    
+
+    // MARK: - UI 제약조건
     private func configureUI() {
         view.backgroundColor = UIColor.mainRed
         [imageView, collectionView].forEach { view.addSubview($0) }
@@ -85,9 +89,9 @@ class MainViewController: UIViewController {
             $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide.snp.horizontalEdges)//horizontalEdges = leading, trailing
         }
     }
-
 }
 
+// MARK: - 컬렌션뷰 설정
 extension MainViewController: UICollectionViewDelegate {
     //컬렉션 뷰 선택시 이벤트
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -110,7 +114,7 @@ extension MainViewController: UICollectionViewDataSource {
     }
 }
 
-//컬러 hex 값
+// MARK: - 컬러 hex 값
 extension UIColor {
     static let mainRed = UIColor(red: 190/255, green: 30/255, blue: 40/255, alpha: 1.0)
     static let darkRed = UIColor(red: 120/255, green: 30/255, blue: 30/255, alpha: 1.0)
