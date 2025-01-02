@@ -11,19 +11,19 @@ import RxSwift
 
 class DetailViewModel {
     
-    private let id: Int//포켓몬 id
+    private let id: String//포켓몬 id
     private let disposeBag = DisposeBag()
     
     // PublishSubject 선언
     let pokemonInfoSubject = PublishSubject<PokemonDetailInfo>()
     
-    init(with id: Int) {
+    init(id: String) {
         self.id = id
         fetchPokemonInfo(id)
     }
     
     //포켓몬 정보 fetch
-    func fetchPokemonInfo(_ id: Int) {
+    func fetchPokemonInfo(_ id: String) {
 
         //URL 세팅
         guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon/\(id)/") else {

@@ -7,11 +7,13 @@
 
 import Foundation
 import RxSwift
+import Kingfisher
 
 class MainViewModel {
     
     private let disposeBag = DisposeBag()
-
+    private var offset = -20
+    
     //Subject(Observable + Observer) 선언 & 초기값 생성
     let pokemonSubject = BehaviorSubject(value: [Pokemon]())
     
@@ -21,9 +23,11 @@ class MainViewModel {
     
     //포켓몬 이미지 fetch
     func fetchPokemon() {
-                
+        
+        offset += 20
+        
         //URL 생성
-        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon?limit=20&offset=0") else {
+        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon?limit=20&offset=\(offset)") else {
             pokemonSubject.onError(NetworkError.invalidUrl)
             return
         }

@@ -14,7 +14,6 @@ class MainViewController: UIViewController {
     private let viewModel = MainViewModel()//뷰 모델 : 비즈니스 로직
     private let disposeBag = DisposeBag()
     private var pokemon = [Pokemon]()
-    static var offset = 0
     
     // MARK: - UI 생성
     private let imageView: UIImageView = {
@@ -43,8 +42,7 @@ class MainViewController: UIViewController {
     // MARK: - 포켓몬 이미지 가져오기
     private func bind() {
         //viewModel의 pokemonSubject 구독
-        viewModel.pokemonSubject.throttle(.milliseconds(1000), scheduler: MainScheduler.instance) //컬렉션뷰 스크롤시 요청을 1초에 1번만 받도록 스로틀 설정
-            .observe(on: MainScheduler.instance).subscribe(onNext: { [weak self] pokemon in //UI관련 로직이기 때문에 메인쓰레드에 할당
+        viewModel.pokemonSubject.observe(on: MainScheduler.instance).subscribe(onNext: { [weak self] pokemon in //UI관련 로직이기 때문에 메인쓰레드에 할당
                 self?.pokemon.append(contentsOf: pokemon)
                 self?.collectionView.reloadData()
             }, onError: { error in
@@ -66,7 +64,7 @@ class MainViewController: UIViewController {
         collectionView.snp.makeConstraints {
             $0.top.equalTo(imageView.snp.bottom).offset(20)
             $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
-            $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide.snp.horizontalEdges)//horizontalEdges = leading, trailing
+            $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide.snp.horizontalEdges)
         }
     }
 }
@@ -99,36 +97,36 @@ private func createLayout() -> UICollectionViewLayout {
 extension MainViewController: UICollectionViewDelegate {
     //컬렉션 뷰 선택시 이벤트
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        navigationController?.pushViewController(DetailViewController(id: indexPath.row + 1), animated: true)
+        navigationController?.pushViewController(DetailViewController(id: pokemon[indexPath.row].id), animated: true)
     }
     
-    //스크롤이 화면 하단에 도달하면 새로운 포켓몬 가져오기
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offsetY = scrollView.contentOffset.y//현재 스크롤 위치
-        let contentHeight = scrollView.contentSize.height//셀이 로드됐을때의 전체 스크롤 세로 길이
-        let frameHeight = scrollView.frame.height//화면에 보이는 frame 세로 길이
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        print(indexPath.row)
         
-        //현재 스크롤 위치가
-        if offsetY >= contentHeight - frameHeight {
-            //현재 로드된 포켓몬 개수 체크
-//            print(pokemon.count)
-            guard pokemon.count < 1020 else {
-                return
-            }
-            
-            bind()
+        //현재 로드된 포켓몬 개수 체크
+        guard pokemon.count < 1020 else {
+            return
+        }
+        
+        if indexPath.row > pokemon.count - 5 {
+            viewModel.fetchPokemon()
+//            collectionView.rx.contentOffset.throttle(.seconds(1), scheduler: MainScheduler.instance)
+//                .subscribe(onNext: { [weak self] _ in
+//                    self?.viewModel.fetchPokemon()
+//                }).disposed(by: disposeBag)
         }
     }
     
 }
+
+
 
 extension MainViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainCollectionViewCell.id, for: indexPath) as? MainCollectionViewCell else {
             return UICollectionViewCell()
         }
-        cell.configure(indexPath: indexPath.row)
-        
+        cell.configure(pokemon[indexPath.row])
         return cell
     }
     
