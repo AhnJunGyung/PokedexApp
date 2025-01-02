@@ -15,7 +15,7 @@ class DetailViewModel {
     private let disposeBag = DisposeBag()
     
     // PublishSubject 선언
-    let pokemonInfoSubject = PublishSubject<PokemonInfo>()
+    let pokemonInfoSubject = PublishSubject<PokemonDetailInfo>()
     
     init(with id: Int) {
         self.id = id
@@ -31,7 +31,7 @@ class DetailViewModel {
             return
         }
         
-        NetworkManager.shared.fetch(url: url).subscribe(onSuccess: { [weak self] (pokemonInfo: PokemonInfo) in
+        NetworkManager.shared.fetch(url: url).subscribe(onSuccess: { [weak self] (pokemonInfo: PokemonDetailInfo) in
             //정상 방출
             self?.pokemonInfoSubject.onNext(pokemonInfo)
         }, onFailure: { [weak self] error in

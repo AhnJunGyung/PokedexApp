@@ -15,7 +15,7 @@ class DetailViewController: UIViewController {
     
     private lazy var viewModel = DetailViewModel(with: id)//뷰모델 객체 생성
     private let disposeBag = DisposeBag()
-    private var pokemonInfo: PokemonInfo?
+    private var pokemonInfo: PokemonDetailInfo?
     
     init(id: Int) {
         self.id = id

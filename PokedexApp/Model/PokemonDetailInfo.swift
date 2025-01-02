@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PokemonInfo: Codable {
+struct PokemonDetailInfo: Codable {
     let id: Int
     let name: String
     let species: Species
