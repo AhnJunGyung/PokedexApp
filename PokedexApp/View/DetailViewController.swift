@@ -43,6 +43,8 @@ class DetailViewController: UIViewController {
     private var idNameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 32, weight: .semibold)
+        label.sizeToFit()
+        label.textAlignment = .center
         return label
     }()
     
@@ -127,8 +129,8 @@ class DetailViewController: UIViewController {
         
         idNameLabel.snp.makeConstraints {
             $0.top.equalTo(imageView.snp.bottom).offset(10)
-            $0.centerX.equalTo(rect)
             $0.height.equalTo(50)
+            $0.horizontalEdges.equalTo(rect.snp.horizontalEdges)
         }
         
         typeLabel.snp.makeConstraints {

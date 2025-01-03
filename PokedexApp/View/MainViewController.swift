@@ -15,6 +15,8 @@ class MainViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private var pokemon = [Pokemon]()
     
+    private var scrollStatus = true//스크롤에서 함수요청을 할 때 제어를 위한 변수
+    
     // MARK: - UI 생성
     private let imageView: UIImageView = {
         let imageView = UIImageView()
@@ -41,13 +43,20 @@ class MainViewController: UIViewController {
     
     // MARK: - 포켓몬 이미지 가져오기
     private func bind() {
-        //viewModel의 pokemonSubject 구독
-        viewModel.pokemonSubject.observe(on: MainScheduler.instance).subscribe(onNext: { [weak self] pokemon in //UI관련 로직이기 때문에 메인쓰레드에 할당
-                self?.pokemon.append(contentsOf: pokemon)
-                self?.collectionView.reloadData()
-            }, onError: { error in
-                print("에러 발생: \(error)")
-            }).disposed(by: disposeBag)
+        //viewModel의 pokemonSubject 구독. UI관련 로직이기 때문에 메인쓰레드에 할당
+        viewModel.pokemonSubject.observe(on: MainScheduler.instance).subscribe(onNext: { [weak self] pokemon in
+            
+            //더 이상 데이터가 없을 경우 동작하지 않도록
+            if pokemon.isEmpty {
+                return
+            }
+            
+            self?.pokemon.append(contentsOf: pokemon)
+            self?.collectionView.reloadData()
+            self?.scrollStatus = true//스크롤을 통해 데이터 받을 수 있도록
+        }, onError: { error in
+            print("에러 발생: \(error)")
+        }).disposed(by: disposeBag)
     }
     
     // MARK: - UI 제약조건
@@ -101,25 +110,17 @@ extension MainViewController: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        print(indexPath.row)
-        
-        //현재 로드된 포켓몬 개수 체크
-        guard pokemon.count < 1020 else {
-            return
-        }
         
         if indexPath.row > pokemon.count - 5 {
-            viewModel.fetchPokemon()
-//            collectionView.rx.contentOffset.throttle(.seconds(1), scheduler: MainScheduler.instance)
-//                .subscribe(onNext: { [weak self] _ in
-//                    self?.viewModel.fetchPokemon()
-//                }).disposed(by: disposeBag)
+            //scrollStatus라는 값으로 fetchPokemon()에 대한 요청을 1번으로 제한
+            if scrollStatus {
+                scrollStatus = false
+                viewModel.fetchPokemon()
+            }
         }
     }
     
 }
-
-
 
 extension MainViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
