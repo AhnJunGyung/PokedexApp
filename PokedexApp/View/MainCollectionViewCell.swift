@@ -34,24 +34,9 @@ class MainCollectionViewCell: UICollectionViewCell {
         super.prepareForReuse()
         imageView.image = nil//셀 이미지를 비워 버벅거림을 줄여줌
     }
-    
-    func configure(indexPath: Int) {
-        //셀 indexPath로 포켓몬 id 식별. indexPath는 0부터 시작되기 때문에 +1
-        let urlString = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/\(indexPath + 1).png"
 
-        guard let url = URL(string: urlString) else { return }
-        
-        //백그라운드에서 데이터 변환 작업
-        DispatchQueue.global().async { [weak self] in
-            if let data = try? Data(contentsOf: url) {
-                if let image = UIImage(data: data) {
-                    
-                    //UI는 메인 쓰레드에서 작업
-                    DispatchQueue.main.sync {
-                        self?.imageView.image = image
-                    }
-                }
-            }
-        }
+    func configure(_ pokemon: Pokemon) {
+        let url = URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/\(pokemon.id).png")
+        imageView.kf.setImage(with: url)
     }
 }

@@ -8,16 +8,17 @@
 import UIKit
 import SnapKit
 import RxSwift
+import Kingfisher
 
 class DetailViewController: UIViewController {
     
-    private let id: Int//포켓몬 id
+    private let id: String//포켓몬 id
     
-    private lazy var viewModel = DetailViewModel(with: id)//뷰모델 객체 생성
+    private lazy var viewModel = DetailViewModel(id: id)//뷰모델 객체 생성
     private let disposeBag = DisposeBag()
-    private var pokemonInfo: PokemonInfo?
+    private var pokemonInfo: PokemonDetailInfo?
     
-    init(id: Int) {
+    init(id: String) {
         self.id = id
         super.init(nibName: nil, bundle: nil)
     }
@@ -42,6 +43,8 @@ class DetailViewController: UIViewController {
     private var idNameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 32, weight: .semibold)
+        label.sizeToFit()
+        label.textAlignment = .center
         return label
     }()
     
@@ -95,22 +98,9 @@ class DetailViewController: UIViewController {
     }
     
     // MARK: - 포켓몬 이미지 작업
-    private func configureImageView(id: Int) {
-        let urlString = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/\(id).png"
-        guard let url = URL(string: urlString) else { return }
-        
-        //백그라운드에서 데이터 변환 작업
-        DispatchQueue.global().async { [weak self] in
-            if let data = try? Data(contentsOf: url) {
-                if let image = UIImage(data: data) {
-                    
-                    //UI는 메인 쓰레드에서 작업
-                    DispatchQueue.main.sync {
-                        self?.imageView.image = image
-                    }
-                }
-            }
-        }
+    private func configureImageView(id: String) {        
+        let url = URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/\(id).png")
+        imageView.kf.setImage(with: url)
     }
     
     // MARK: - UI 제약조건
@@ -139,8 +129,8 @@ class DetailViewController: UIViewController {
         
         idNameLabel.snp.makeConstraints {
             $0.top.equalTo(imageView.snp.bottom).offset(10)
-            $0.centerX.equalTo(rect)
             $0.height.equalTo(50)
+            $0.horizontalEdges.equalTo(rect.snp.horizontalEdges)
         }
         
         typeLabel.snp.makeConstraints {
