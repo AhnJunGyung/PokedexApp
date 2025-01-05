@@ -76,7 +76,7 @@ class DetailViewController: UIViewController {
     // MARK: - 포켓몬 정보 가져오기 & 세팅
     private func bind() {
         //UI작업 MainScheduler에서 작업
-        viewModel.pokemonInfoSubject.observe(on: MainScheduler()).subscribe(onNext: { pokemonInfo in
+        viewModel.pokemonInfoRelay.observe(on: MainScheduler()).subscribe(onNext: { pokemonInfo in
             
             self.configureImageView(id: self.id)//포켓몬 이미지
             

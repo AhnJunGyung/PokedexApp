@@ -43,8 +43,8 @@ class MainViewController: UIViewController {
     
     // MARK: - 포켓몬 이미지 가져오기
     private func bind() {
-        //viewModel의 pokemonSubject 구독. UI관련 로직이기 때문에 메인쓰레드에 할당
-        viewModel.pokemonSubject.observe(on: MainScheduler.instance).subscribe(onNext: { [weak self] pokemon in
+        //viewModel의 pokemonRelay 구독. UI관련 로직이기 때문에 메인쓰레드에 할당
+        viewModel.pokemonRelay.observe(on: MainScheduler.instance).subscribe(onNext: { [weak self] pokemon in
             
             //더 이상 데이터가 없을 경우 동작하지 않도록
             if pokemon.isEmpty {
