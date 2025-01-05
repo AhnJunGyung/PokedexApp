@@ -8,14 +8,16 @@
 import Foundation
 import RxSwift
 import Kingfisher
+import RxCocoa
 
 class MainViewModel {
     
     private let disposeBag = DisposeBag()
     private var offset = -20
     
-    //Subject(Observable + Observer) 선언 & 초기값 생성
-    let pokemonSubject = BehaviorSubject(value: [Pokemon]())
+    //BehaviorRelay는 onError, onCompleted 이벤트가 없다.
+    //즉, 정상적인 방출은 모두 받을 수 있기 때문에 UI에 사용하기 적합.
+    let pokemonRelay = BehaviorRelay(value: [Pokemon]())
     
     init() {
         fetchPokemon()
@@ -28,17 +30,12 @@ class MainViewModel {
         
         //URL 생성
         guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon?limit=20&offset=\(offset)") else {
-            pokemonSubject.onError(NetworkError.invalidUrl)
             return
         }
         
         //NetworkManager 구독
         NetworkManager.shared.fetch(url: url).subscribe(onSuccess: { [weak self] (pokemonResponse: PokemonResponse) in
-            //정상적인 값이 방출된 경우
-            self?.pokemonSubject.onNext(pokemonResponse.results)
-        }, onFailure: { [weak self] error in
-            //오류가 방출된 경우
-            self?.pokemonSubject.onError(error)
+            self?.pokemonRelay.accept(pokemonResponse.results)
         }).disposed(by: disposeBag)
     }
 }

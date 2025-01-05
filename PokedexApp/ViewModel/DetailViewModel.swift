@@ -8,14 +8,15 @@
 import Foundation
 import UIKit
 import RxSwift
+import RxCocoa
 
 class DetailViewModel {
     
     private let id: String//포켓몬 id
     private let disposeBag = DisposeBag()
     
-    // PublishSubject 선언
-    let pokemonInfoSubject = PublishSubject<PokemonDetailInfo>()
+    // PublishRelay 선언
+    let pokemonInfoRelay = PublishRelay<PokemonDetailInfo>()
     
     init(id: String) {
         self.id = id
@@ -27,16 +28,12 @@ class DetailViewModel {
 
         //URL 세팅
         guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon/\(id)/") else {
-            pokemonInfoSubject.onError(NetworkError.invalidUrl)
             return
         }
         
         NetworkManager.shared.fetch(url: url).subscribe(onSuccess: { [weak self] (pokemonInfo: PokemonDetailInfo) in
             //정상 방출
-            self?.pokemonInfoSubject.onNext(pokemonInfo)
-        }, onFailure: { [weak self] error in
-            //오류 방출
-            self?.pokemonInfoSubject.onError(error)
+            self?.pokemonInfoRelay.accept(pokemonInfo)
         }).disposed(by: disposeBag)
     }
     
